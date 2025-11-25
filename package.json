@@ -8,14 +8,16 @@
     "start": "node build/server.js",
     "build": "tsup src --out-dir build"
   },
-    "devDependencies": {
+  "devDependencies": {
     "@types/node": "18.14.1",
     "tsup": "6.6.3",
     "tsx": "3.12.3",
     "typescript": "4.9.5"
   },
-    "dependencies": {
-    "fastify": "4.13.0"
+  "dependencies": {
+    "dotenv": "17.2.3",
+    "fastify": "4.13.0",
+    "zod": "4.1.13"
   },
   "keywords": [],
   "author": "",
