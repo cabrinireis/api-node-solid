@@ -1,9 +1,23 @@
 import fastify from 'fastify'
-import { PrismaClient } from 'generated/prisma/client'
-import { PrismaPg } from '@prisma/adapter-pg'
+import { prisma } from './lib/prisma'
+import { z } from 'zod'
 export const app = fastify()
 
-const connectionString = `${process.env.DATABASE_URL}`
+app.post('/users', async (request, reply) => {
+    const createUserSchema = z.object({
+        name: z.string(),
+        email: z.string(),
+        password: z.string().min(6),
+    })
 
-const adapter = new PrismaPg({ connectionString })
-const prisma = new PrismaClient({ adapter })
+    const { name, email, password } = createUserSchema.parse(request.body)
+    await prisma.user.create({
+        data: {
+            name,
+            email,
+            password_hash: password,
+        },
+    })
+
+    return reply.status(201).send({ message: 'User created successfully' })
+})
