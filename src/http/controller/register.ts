@@ -4,6 +4,7 @@ import { hash } from 'bcryptjs'
 import { z } from 'zod'
 import { RegisterUseCase } from '@/use-cases/register'
 import { PrismaUsersRepository } from '@/repositories/prisma/prisma-users-repository'
+import { UserAlreadyExistError } from '@/use-cases/errors/user-already-exist-error'
 export const app = fastify()
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
@@ -20,7 +21,11 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
 
         await registerUseCase.execute({ name, email, password })
     } catch (error) {
-        return reply.status(400).send({ message: (error as Error).message })
+        if (error instanceof UserAlreadyExistError) {
+            return reply.status(409).send({ message: error.message })
+        } else {
+            return reply.status(400).send({ message: (error as Error).message })
+        }
     }
     return reply.status(201).send({ message: 'User created successfully' })
 }
