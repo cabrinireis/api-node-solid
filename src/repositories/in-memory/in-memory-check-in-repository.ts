@@ -1,20 +1,44 @@
-import { CheckIn } from "generated/prisma/client";
-import CheckInsRepository from "../check-ins-repository";
-import { CheckInUncheckedCreateInput } from "generated/prisma/models";
+import { CheckIn, Prisma } from "generated/prisma/client";
 import { randomUUID } from "crypto";
+import { CheckInsRepository } from "../check-ins-repository";
+import dayjs from "dayjs";
 
 export class InMemoryCheckInsRepository  implements CheckInsRepository {
       public items: CheckIn[] = []
 
-      async create(data: CheckInUncheckedCreateInput): Promise<CheckIn> {
-            const checkIn = {
-                id: randomUUID(),
-                user_id: data.user_id,
-                gym_id: data.gym_id,
-                validated_at: data.validated_at ? new Date(data.validated_at) : null,
-                created_at: new Date(),
-            }
-            this.items.push(checkIn)
-            return checkIn
-      }
+    
+  async findByUserIdOnDate(userId: string, date: Date) {
+      const startOfTheDay = dayjs(date).startOf('date')
+      const endOfTheDay = dayjs(date).endOf('date')
+
+      
+      const checkInOnSameDate = this.items.find( 
+            (checkIn) => {
+            const checkIndDate = dayjs(checkIn.created_at)
+            const isOnSameDay = checkIndDate.isAfter(startOfTheDay) && checkIndDate.isBefore(endOfTheDay)
+
+            return checkIn.user_id === userId && isOnSameDay
+      } 
+    )
+
+    if (!checkInOnSameDate) {
+      return null
+    }
+
+    return checkInOnSameDate
+  }
+
+  async create(data: Prisma.CheckInUncheckedCreateInput) {
+    const checkIn = {
+      id: randomUUID(),
+      user_id: data.user_id,
+      gym_id: data.gym_id,
+      validated_at: data.validated_at ? new Date(data.validated_at) : null,
+      created_at: new Date(),
+    }
+
+    this.items.push(checkIn)
+
+    return checkIn
+  }
 }
