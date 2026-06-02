@@ -11,6 +11,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
         password: z.string().min(6),
     })
 
+
     const { name, email, password } = createUserSchema.parse(request.body)
     try {
         const registerUseCase = makeRegisterUseCase()
