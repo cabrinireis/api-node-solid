@@ -1,9 +1,22 @@
-// crie um teste simples
-import { expect, describe, it } from 'vitest'
+import { expect, describe, it, beforeAll, afterAll } from 'vitest'
+import resquest from 'supertest'
+import { app } from '@/app'
 
-describe('Example Test', () => {
-    it('should be true', () => {
-        expect(true).toBe(true)
-        
+describe('Register (e2e)', () => {
+    beforeAll(async () => {
+        await app.ready()
+    })
+
+    afterAll(async () => {
+        await app.close()
+    })
+
+    it('should be able to register', async () => {
+        const response = await resquest(app.server).post('/users').send({
+            name: 'Fulano testesssss',
+            email: 'teste@exemple.com',
+            password: '123456222',
+        })
+        expect(response.statusCode).toEqual(201)
     })
 })
