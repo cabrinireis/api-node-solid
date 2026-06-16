@@ -2,6 +2,7 @@ import fastify from 'fastify'
 import fastifyJwt from '@fastify/jwt'
 import { usersRoutes } from '@/http/controllers/users/routes'
 import { gymsRoutes } from './http/controllers/gyms/routes'
+import { checkInsRoutes } from './http/controllers/check-ins/routes'
 import { prisma } from '@/lib/prisma'
 import { ZodError } from 'zod'
 export const app = fastify()
@@ -19,6 +20,7 @@ app.addHook('onClose', async () => {
 
 app.register(usersRoutes)
 app.register(gymsRoutes)
+app.register(checkInsRoutes)
 
 app.setErrorHandler(async (error, _, reply) => {
     if (error instanceof ZodError) {

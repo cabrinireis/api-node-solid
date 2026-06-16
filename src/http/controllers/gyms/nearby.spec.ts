@@ -13,9 +13,9 @@ describe('Nearby Gyms (e2e)', () => {
   })
 
   beforeEach(async () => {
-    await prisma.checkIn.deleteMany()
-    await prisma.gym.deleteMany()
-    await prisma.user.deleteMany()
+    // await prisma.checkIn.deleteMany()
+    // await prisma.gym.deleteMany()
+    // await prisma.user.deleteMany()
   })
 
   it('should be able list nearby gyms', async () => {

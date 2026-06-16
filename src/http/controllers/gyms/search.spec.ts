@@ -13,11 +13,6 @@ describe('Search Gym (e2e)', () => {
     await app.close()
   })
 
-  beforeEach(async () => {
-    await prisma.checkIn.deleteMany()
-    await prisma.gym.deleteMany()
-    await prisma.user.deleteMany()
-  })
 
   it('should be able search gym by title', async () => {
     const { token } = await createAndAuthenticateUser(app)
@@ -26,7 +21,7 @@ describe('Search Gym (e2e)', () => {
       .post('/gyms')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        title: 'JavaScript Gym',
+        title: 'xpto Gym',
         description: 'Some description.',
         phone: '1199999999',
         latitude: -27.2092052,
@@ -35,7 +30,7 @@ describe('Search Gym (e2e)', () => {
 
         const response  = await request(app.server)
         .get('/gyms/search')
-        .query({ q: 'JavaScript Gym' })
+        .query({ q: 'xpto Gym' })
         .set('Authorization', `Bearer ${token}`)
         .send()
 
@@ -43,7 +38,7 @@ describe('Search Gym (e2e)', () => {
         expect(response.body.gyms).toHaveLength(1)
         expect(response.body.gyms).toEqual([
         expect.objectContaining({
-        title: 'JavaScript Gym',
+        title: 'xpto Gym',
       }),
     ])
   })
