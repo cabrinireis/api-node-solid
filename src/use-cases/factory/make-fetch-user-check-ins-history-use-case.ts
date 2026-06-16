@@ -1,9 +1,9 @@
-import { GetUserProfileUseCase } from '../get-user-profile'
-import { PrismaUsersRepository } from '@/repositories/prisma/prisma-users-repository'
+import { PrismaCheckInsRepository } from '@/repositories/prisma/prisma-check-in-repository'
+import { FetchUserCheckInsHistoryUseCase } from '../fetch-user-check-ins-history'
 
-export function makeGetUserProfileUseCase() {
-    const usersRepository = new PrismaUsersRepository()
-    const useCase = new GetUserProfileUseCase(usersRepository)
+export function makeFetchUserCheckInsHistoryUseCase() {
+    const checkInsRepository = new PrismaCheckInsRepository()
+    const useCase = new FetchUserCheckInsHistoryUseCase(checkInsRepository)
 
     return useCase
 }
