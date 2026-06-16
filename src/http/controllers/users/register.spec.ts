@@ -12,9 +12,11 @@ describe('Register (e2e)', () => {
     })
 
     it('should be able to register', async () => {
+        const email = `teste-${Date.now()}@example.com`
+
         const response = await request(app.server).post('/users').send({
             name: 'Fulano testesssss',
-            email: 'teste@exemple.com',
+            email,
             password: '123456222',
         })
         expect(response.statusCode).toEqual(201)

@@ -1,8 +1,8 @@
-import { prisma } from '@/lib/prisma'
 import 'dotenv/config'
 import { execSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import type { Environment } from 'vitest/runtime'
+import { prisma } from '@/lib/prisma'
 
 function generateDatabaseUrl(schema: string) {
     if (!process.env.DATABASE_URL) {
@@ -17,7 +17,7 @@ function generateDatabaseUrl(schema: string) {
 
 export default <Environment>{
     name: 'prisma',
-    transformMode: 'ssr',
+    viteEnvironment: 'ssr',
     async setup() {
         const schema = randomUUID()
         const databaseUrl = generateDatabaseUrl(schema)
@@ -27,11 +27,11 @@ export default <Environment>{
         return {
             //  Create db connection, seed data, etc.
             async teardown() {
+
                 // Delete db connection, etc.
                 await prisma.$executeRawUnsafe(
                     `DROP SCHEMA IF EXISTS "${schema}" CASCADE`
                 )
-
                 await prisma.$disconnect()
             },
         }

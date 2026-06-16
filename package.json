@@ -9,7 +9,7 @@
     "build": "tsup src --out-dir build",
     "test": "vitest run --project unit",
     "test:e2e": "vitest --project e2e",
-    "test:watch": "vitest watch"
+    "test:watch:e2e": "vitest --project e2e --watch"
   },
   "devDependencies": {
     "@types/bcryptjs": "3.0.0",

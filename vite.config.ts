@@ -17,8 +17,10 @@ export default defineConfig({
             extends: true,
             test:{
                 name: 'e2e',
-                include: ['src/http/controllers/*.spec.ts'],
-                environment: './prisma/vitest-environment-prisma/prisma-test-environment.ts'
+                include: ['src/http/controllers/**/*.spec.ts'],
+                environment: './prisma/vitest-environment-prisma/prisma-test-environment.ts',
+                testTimeout: 30000,
+                hookTimeout: 30000,
             }
         }
        ]

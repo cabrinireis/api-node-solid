@@ -17,5 +17,5 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
 
         await createGymUseCase.execute({ title, description, phone, latitude, longitude })
 
-    return reply.status(201).send({ message: 'User created successfully' })
+    return reply.status(201).send()
 }

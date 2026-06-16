@@ -2,6 +2,7 @@ import fastify from 'fastify'
 import fastifyJwt from '@fastify/jwt'
 import { usersRoutes } from '@/http/controllers/users/routes'
 import { gymsRoutes } from './http/controllers/gyms/routes'
+import { prisma } from '@/lib/prisma'
 import { ZodError } from 'zod'
 export const app = fastify()
 import { env } from '@/env'
@@ -10,6 +11,10 @@ import { env } from '@/env'
 
 app.register(fastifyJwt, {
     secret: env.JWT_SECRET,
+})
+
+app.addHook('onClose', async () => {
+    await prisma.$disconnect()
 })
 
 app.register(usersRoutes)
