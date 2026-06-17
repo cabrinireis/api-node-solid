@@ -44,14 +44,9 @@ jobs:
                     sleep 2
                   done
 
-            - name: Run Prisma migrations
-              env:
-                  DATABASE_URL: postgresql://docker:docker@localhost:5432/apisolid
-              run: pnpm prisma migrate deploy
-
             - name: Run E2E tests
               run: pnpm run test:e2e
               env:
                   JWT_SECRET: apinodesolidsecret
-                  DATABASE_URL: 'postgresql://docker:docker@localhost:5432/apisolid?schema=public'
+                  DATABASE_URL: 'postgresql://docker:docker@localhost:5432/apisolid'
                   NODE_ENV: test
