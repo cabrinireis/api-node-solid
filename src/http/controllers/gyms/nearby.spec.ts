@@ -4,60 +4,60 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { createAndAuthenticateUser } from '@/utils/create-and-authenticate-user'
 import { prisma } from '@/lib/prisma'
 describe('Nearby Gyms (e2e)', () => {
-  beforeAll(async () => {
-    await app.ready()
-  })
+    beforeAll(async () => {
+        await app.ready()
+    })
 
-  afterAll(async () => {
-    await app.close()
-  })
+    afterAll(async () => {
+        await app.close()
+    })
 
-  beforeEach(async () => {
-    // await prisma.checkIn.deleteMany()
-    // await prisma.gym.deleteMany()
-    // await prisma.user.deleteMany()
-  })
+    beforeEach(async () => {
+        // await prisma.checkIn.deleteMany()
+        // await prisma.gym.deleteMany()
+        // await prisma.user.deleteMany()
+    })
 
-  it('should be able list nearby gyms', async () => {
-    const { token } = await createAndAuthenticateUser(app)
+    it('should be able list nearby gyms', async () => {
+        const { token } = await createAndAuthenticateUser(app, true)
 
-    await request(app.server)
-      .post('/gyms')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        title: 'JavaScript Gym',
-        description: 'Some description.',
-        phone: '1199999999',
-        latitude: -27.2092052,
-        longitude: -49.6401091,
-      })
+        await request(app.server)
+            .post('/gyms')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                title: 'JavaScript Gym',
+                description: 'Some description.',
+                phone: '1199999999',
+                latitude: -27.2092052,
+                longitude: -49.6401091,
+            })
 
-    await request(app.server)
-      .post('/gyms')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        title: 'TypeScript Gym',
-        description: 'Some description.',
-        phone: '1199999999',
-        latitude: -27.0610928,
-        longitude: -49.5229501,
-      })
+        await request(app.server)
+            .post('/gyms')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                title: 'TypeScript Gym',
+                description: 'Some description.',
+                phone: '1199999999',
+                latitude: -27.0610928,
+                longitude: -49.5229501,
+            })
 
-    const response = await request(app.server)
-      .get('/gyms/nearby')
-      .query({
-        latitude: -27.0610928,
-        longitude: -49.5229501,
-      })
-      .set('Authorization', `Bearer ${token}`)
-      .send()
+        const response = await request(app.server)
+            .get('/gyms/nearby')
+            .query({
+                latitude: -27.0610928,
+                longitude: -49.5229501,
+            })
+            .set('Authorization', `Bearer ${token}`)
+            .send()
 
-    expect(response.statusCode).toEqual(200)
-    expect(response.body.gyms).toHaveLength(1)
-    expect(response.body.gyms).toEqual([
-      expect.objectContaining({
-        title: 'TypeScript Gym',
-      }),
-    ])
-  })
+        expect(response.statusCode).toEqual(200)
+        expect(response.body.gyms).toHaveLength(1)
+        expect(response.body.gyms).toEqual([
+            expect.objectContaining({
+                title: 'TypeScript Gym',
+            }),
+        ])
+    })
 })
