@@ -2,7 +2,7 @@ import 'dotenv/config'
 import { execSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import type { Environment } from 'vitest/runtime'
-import { PrismaClient } from '../generated/client'
+import { PrismaClient } from '../../generated/prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { resetPrismaClient } from '../../src/lib/prisma'
 
