@@ -2,7 +2,11 @@ import 'dotenv/config'
 import { execSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import type { Environment } from 'vitest/runtime'
-import { prisma } from '@/lib/prisma'
+import { PrismaClient } from '../generated/client'
+import { PrismaPg } from '@prisma/adapter-pg'
+import { resetPrismaClient } from '../../src/lib/prisma'
+
+let prisma: PrismaClient | null = null
 
 function generateDatabaseUrl(schema: string) {
     if (!process.env.DATABASE_URL) {
@@ -21,18 +25,35 @@ export default <Environment>{
     async setup() {
         const schema = randomUUID()
         const databaseUrl = generateDatabaseUrl(schema)
+
+        await resetPrismaClient()
+
         process.env.DATABASE_URL = databaseUrl
 
-        execSync('npx prisma migrate deploy')
-        return {
-            //  Create db connection, seed data, etc.
-            async teardown() {
+        prisma = new PrismaClient({
+            adapter: new PrismaPg(
+                { connectionString: databaseUrl },
+                { schema },
+            ),
+        })
 
-                // Delete db connection, etc.
-                await prisma.$executeRawUnsafe(
-                    `DROP SCHEMA IF EXISTS "${schema}" CASCADE`
-                )
-                await prisma.$disconnect()
+        execSync('npx prisma migrate deploy', {
+            env: {
+                ...process.env,
+                DATABASE_URL: databaseUrl,
+            },
+        })
+
+        return {
+            async teardown() {
+                if (prisma) {
+                    await prisma.$executeRawUnsafe(
+                        `DROP SCHEMA IF EXISTS "${schema}" CASCADE`
+                    )
+                    await prisma.$disconnect()
+                }
+
+                await resetPrismaClient()
             },
         }
     },
