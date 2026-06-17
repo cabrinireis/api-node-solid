@@ -44,9 +44,11 @@ jobs:
                     sleep 2
                   done
 
+            - name: Create .env file for tests
+              run: |
+                  echo "DATABASE_URL=postgresql://docker:docker@localhost:5432/apisolid" >> .env
+                  echo "JWT_SECRET=apinodesolidsecret" >> .env
+                  echo "NODE_ENV=test" >> .env
+
             - name: Run E2E tests
               run: pnpm run test:e2e
-              env:
-                  JWT_SECRET: apinodesolidsecret
-                  DATABASE_URL: 'postgresql://docker:docker@localhost:5432/apisolid'
-                  NODE_ENV: test
